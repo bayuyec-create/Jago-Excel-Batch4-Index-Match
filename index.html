@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF--8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografik Interaktif: Menguasai INDEX & MATCH di Excel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+        }
+        .worksheet-table td, .worksheet-table th {
+            transition: background-color 0.3s ease-in-out;
+        }
+        /* Highlights */
+        .highlight-search-range { background-color: #D1E7DD !important; }
+        .highlight-lookup-value { background-color: #FEF3C7 !important; font-weight: bold; }
+        .highlight-result-range { background-color: #CFF4FC !important; }
+        .highlight-final-cell { background-color: #F8D7DA !important; border: 2px solid #D9534F; font-weight: bold; }
+
+        .highlight-row-range { background-color: #D1E7DD !important; }
+        .highlight-col-range { background-color: #D1E7DD !important; }
+        .highlight-row-value { background-color: #FEF3C7 !important; font-weight: bold; }
+        .highlight-col-value { background-color: #FEF3C7 !important; font-weight: bold; }
+        .highlight-data-array { background-color: #CFF4FC !important; }
+        
+        [contenteditable="true"] { outline: 2px solid transparent; outline-offset: 2px; }
+        [contenteditable="true"]:focus { outline-color: #003F5C; }
+        
+        .tab-btn.active { background-color: #003F5C; color: white; }
+        .practice-tab-btn.active { background-color: #003F5C; color: white; border-color: #003F5C; }
+        .sub-tab-btn.active { background-color: #58508D; color: white; border-color: #58508D; }
+        .step-btn.active { background-color: #58508D; color: white; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-[#003F5C] text-white text-center py-12 px-4">
+        <h1 class="text-4xl md:text-5xl font-bold mb-2">Bosan Sama VLOOKUP?</h1>
+        <p class="text-xl md:text-2xl font-light">Belajar Interaktif Duet Maut Excel: INDEX & MATCH!</p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="problem" class="text-center mb-16">
+             <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+                VLOOKUP itu hebat, tapi kaku. Ia tidak bisa 'menengok ke kiri' untuk mengambil data. Ini seringkali membatasi kita saat mengelola data yang kompleks.
+            </p>
+            <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl mx-auto border-l-8 border-[#FF6361]">
+                <h2 class="text-3xl font-bold text-[#003F5C] mb-2">Kelemahan Terbesar VLOOKUP</h2>
+                <p class="text-2xl text-[#FF6361] font-semibold">"Saya hanya bisa mengambil data di sebelah KANAN kolom pencarian!"</p>
+            </div>
+        </section>
+
+        <section id="introduction" class="mb-16">
+             <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-8 text-center">
+                Mari kita sambut duo pahlawan super fleksibel yang bekerja sama dengan sempurna untuk mengatasi batasan VLOOKUP dan membuka kemungkinan baru dalam analisis data Anda.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <span class="text-6xl mb-4 block">🕵️‍♀️</span>
+                    <h3 class="text-2xl font-bold text-[#58508D]">MATCH</h3>
+                    <p class="mt-2">Si detektif yang menemukan <strong class="text-[#58508D]">POSISI</strong> (nomor baris) dari data yang Anda cari.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <span class="text-6xl mb-4 block">🛍️</span>
+                    <h3 class="text-2xl font-bold text-[#BC5090]">INDEX</h3>
+                    <p class="mt-2">Si eksekutor yang mengambil <strong class="text-[#BC5090]">DATA</strong> dari posisi yang sudah ditemukan oleh MATCH.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="rumus-breakdown" class="mb-16">
+            <h2 class="text-3xl font-bold text-[#003F5C] text-center mb-8">Pembedahan Rumus: Logika & Pola</h2>
+            
+            <div class="flex justify-center flex-wrap gap-2 md:gap-4 mb-6">
+                <button data-target="match-content" class="tab-btn active text-sm md:text-base font-semibold py-2 px-4 rounded-full bg-white shadow border border-gray-200 transition-colors duration-300">Bedah Rumus MATCH</button>
+                <button data-target="index-content" class="tab-btn text-sm md:text-base font-semibold py-2 px-4 rounded-full bg-white shadow border border-gray-200 transition-colors duration-300">Bedah Rumus INDEX</button>
+                <button data-target="combined-content" class="tab-btn text-sm md:text-base font-semibold py-2 px-4 rounded-full bg-white shadow border border-gray-200 transition-colors duration-300">Bedah INDEX & MATCH</button>
+            </div>
+
+            <div id="breakdown-content" class="max-w-4xl mx-auto">
+                <div id="match-content" class="tab-content bg-white rounded-lg shadow-lg p-6 border-t-8 border-[#58508D]">
+                    <h3 class="text-2xl font-bold text-[#58508D] mb-4">MATCH</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold">Logika Penggunaan</h4>
+                            <p class="text-sm text-gray-600">Pakai ini kalau kamu cuma pengen tau, "Eh, data ini ada di baris nomor berapa sih?".</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Pola Rumus</h4>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm whitespace-pre-wrap break-words"><code>=MATCH(dicari; di_mana; 0)</code></pre>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Penjelasan Komponen</h4>
+                            <ul class="list-disc list-inside text-sm space-y-1">
+                                <li><strong class="text-[#58508D]">dicari</strong>: Data kunci yang ingin kamu temukan.</li>
+                                <li><strong class="text-[#58508D]">di_mana</strong>: Satu kolom atau baris tempat pencarian.</li>
+                                <li><strong class="text-[#58508D]">0</strong>: Perintah untuk mencari yang sama persis.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="index-content" class="tab-content hidden bg-white rounded-lg shadow-lg p-6 border-t-8 border-[#BC5090]">
+                    <h3 class="text-2xl font-bold text-[#BC5090] mb-4">INDEX (Dua Versi)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-base">Versi Simpel (Untuk 1 Kolom)</h4>
+                            <p class="text-sm text-gray-600">Paling sering dipakai duet bareng MATCH. Logikanya: "Di kolom ini, ambilin data di baris nomor sekian."</p>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm mt-2 whitespace-pre-wrap break-words"><code>=INDEX(area_data; nomor_urut)</code></pre>
+                             <ul class="list-disc list-inside text-sm space-y-1 mt-2">
+                                <li><strong class="text-[#BC5090]">area_data</strong>: Kolom atau baris tempat jawabanmu berada.</li>
+                                <li><strong class="text-[#BC5090]">nomor_urut</strong>: Posisi data yang ingin diambil (biasanya hasil dari MATCH).</li>
+                            </ul>
+                        </div>
+                        <hr>
+                        <div>
+                            <h4 class="font-semibold text-base">Versi Lengkap (Untuk Tabel)</h4>
+                            <p class="text-sm text-gray-600">Dipakai kalau kamu mau ambil data dari tabel besar (banyak baris & kolom). Logikanya: "Di tabel ini, ambilin data di persimpangan baris X dan kolom Y."</p>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm mt-2 whitespace-pre-wrap break-words"><code>=INDEX(tabel_data; no_baris; [no_kolom])</code></pre>
+                             <ul class="list-disc list-inside text-sm space-y-1 mt-2">
+                                <li><strong class="text-[#BC5090]">tabel_data</strong>: Seluruh area tabelmu.</li>
+                                <li><strong class="text-[#BC5090]">no_baris</strong>: Nomor urut barisnya.</li>
+                                <li><strong class="text-[#BC5090]">[no_kolom]</strong>: Nomor urut kolomnya (opsional).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="combined-content" class="tab-content hidden bg-white rounded-lg shadow-lg p-6 border-t-8 border-[#003F5C]">
+                    <h3 class="text-2xl font-bold text-[#003F5C] mb-4">INDEX & MATCH (Dua Versi)</h3>
+                    <div class="space-y-4">
+                         <div>
+                            <h4 class="font-semibold text-base">Versi Simpel (Pencarian Satu Arah)</h4>
+                            <p class="text-sm text-gray-600">Jurus andalan buat cari data di mana kolom acuan dan kolom hasilnya terpisah.</p>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm mt-2 whitespace-pre-wrap break-words"><code>=INDEX(kolom_hasil; MATCH(dicari; kolom_cari; 0))</code></pre>
+                            <ul class="list-disc list-inside text-sm space-y-1 mt-2">
+                                <li><strong class="text-[#003F5C]">kolom_hasil</strong>: Kolom tempat jawaban akhirmu berada.</li>
+                                <li><strong class="text-[#003F5C]">dicari</strong>: Nilai kunci yang kamu cari.</li>
+                                <li><strong class="text-[#003F5C]">kolom_cari</strong>: Kolom tempat nilai kuncimu berada.</li>
+                            </ul>
+                        </div>
+                        <hr>
+                        <div>
+                            <h4 class="font-semibold text-base">Versi Lengkap (Pencarian Dua Arah)</h4>
+                            <p class="text-sm text-gray-600">Jurus level dewa buat cari data di tabel berdasarkan acuan baris dan kolom sekaligus.</p>
+                            <pre class="bg-gray-100 p-2 rounded-md text-sm mt-2 whitespace-pre-wrap break-words"><code>=INDEX(tabel_data; MATCH(acuan_baris; kolom_baris; 0); MATCH(acuan_kolom; baris_kolom; 0))</code></pre>
+                             <ul class="list-disc list-inside text-sm space-y-1 mt-2">
+                                <li><strong class="text-[#003F5C]">tabel_data</strong>: Seluruh area tabel (tanpa header).</li>
+                                <li><strong class="text-[#003F5C]">MATCH(acuan_baris...)</strong>: Mencari nomor barisnya.</li>
+                                <li><strong class="text-[#003F5C]">MATCH(acuan_kolom...)</strong>: Mencari nomor kolomnya.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="interactive-worksheet" class="mb-16 bg-white rounded-lg shadow-xl p-6 md:p-8">
+            <h2 class="text-3xl font-bold text-[#003F5C] text-center mb-2">Praktik Langsung: Coba Setiap Rumus!</h2>
+             <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-8 text-center">
+                Pilih latihan di bawah untuk fokus pada satu rumus atau gabungkan semuanya!
+            </p>
+
+            <div class="flex justify-center flex-wrap gap-2 md:gap-4 border-b mb-6">
+                <button data-practice-target="match-practice" class="practice-tab-btn active text-base font-semibold py-3 px-6 border-b-2 border-transparent">Contoh MATCH</button>
+                <button data-practice-target="index-practice" class="practice-tab-btn text-base font-semibold py-3 px-6 border-b-2 border-transparent">Contoh INDEX</button>
+                <button data-practice-target="index-match-practice" class="practice-tab-btn text-base font-semibold py-3 px-6 border-b-2 border-transparent">Contoh INDEX & MATCH</button>
+            </div>
+            
+             <!-- Arena Latihan MATCH -->
+            <div id="match-practice" class="practice-content">
+                <div class="w-full bg-gray-50 p-4 rounded-lg border max-w-md mx-auto mb-8">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Tentukan Pencarian</h3>
+                    <label for="match-lookup-value-select" class="block text-sm font-medium text-gray-700 mb-1">Cari Nama Karyawan:</label>
+                    <select id="match-lookup-value-select" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]"></select>
+                </div>
+                 <div class="grid grid-cols-1 gap-8 items-start mt-8">
+                    <div class="overflow-x-auto">
+                        <h3 class="font-bold text-center mb-2">Worksheet Data Karyawan</h3>
+                        <table id="worksheet-match" class="worksheet-table min-w-full bg-white border text-center"></table>
+                    </div>
+                    <div id="match-viz-content" class="bg-gray-50 rounded-lg p-4 shadow-inner"></div>
+                </div>
+            </div>
+
+            <!-- Arena Latihan INDEX -->
+            <div id="index-practice" class="practice-content hidden">
+                <div class="flex justify-center flex-wrap gap-2 md:gap-4 mb-6 bg-gray-100 p-2 rounded-full">
+                     <button data-sub-practice-target="index-simple-practice" class="sub-tab-btn active text-sm font-semibold py-2 px-4 rounded-full bg-white shadow-sm border">Versi Simpel</button>
+                     <button data-sub-practice-target="index-complete-practice" class="sub-tab-btn text-sm font-semibold py-2 px-4 rounded-full bg-white shadow-sm border">Versi Lengkap</button>
+                </div>
+
+                <div id="index-simple-practice" class="sub-practice-content">
+                    <div class="w-full bg-gray-50 p-4 rounded-lg border grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3">Tentukan Pengambilan</h3>
+                            <label for="index-simple-col-select" class="block text-sm font-medium text-gray-700 mb-1">Ambil Info dari Kolom:</label>
+                            <select id="index-simple-col-select" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]"></select>
+                        </div>
+                         <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3 invisible">.</h3>
+                            <label for="index-simple-row-input" class="block text-sm font-medium text-gray-700 mb-1">Pada Baris ke:</label>
+                            <input type="number" id="index-simple-row-input" value="3" min="1" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 gap-8 items-start mt-8">
+                        <div class="overflow-x-auto">
+                            <h3 class="font-bold text-center mb-2">Worksheet Data Karyawan</h3>
+                            <table id="worksheet-index-simple" class="worksheet-table min-w-full bg-white border text-center"></table>
+                        </div>
+                        <div id="index-simple-viz" class="bg-gray-50 rounded-lg p-4 shadow-inner"></div>
+                    </div>
+                </div>
+                 <div id="index-complete-practice" class="sub-practice-content hidden">
+                     <div class="w-full bg-gray-50 p-4 rounded-lg border grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3">Tentukan Pengambilan</h3>
+                            <label for="index-complete-row-input" class="block text-sm font-medium text-gray-700 mb-1">Pada Baris ke:</label>
+                            <input type="number" id="index-complete-row-input" value="2" min="1" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]">
+                        </div>
+                         <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3 invisible">.</h3>
+                            <label for="index-complete-col-input" class="block text-sm font-medium text-gray-700 mb-1">Pada Kolom ke:</label>
+                            <input type="number" id="index-complete-col-input" value="3" min="1" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]">
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-1 gap-8 items-start mt-8">
+                        <div class="overflow-x-auto">
+                            <h3 class="font-bold text-center mb-2">Worksheet Data Penjualan</h3>
+                            <table id="worksheet-index-complete" class="worksheet-table min-w-full bg-white border text-center"></table>
+                        </div>
+                        <div id="index-complete-viz" class="bg-gray-50 rounded-lg p-4 shadow-inner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arena Latihan INDEX & MATCH -->
+            <div id="index-match-practice" class="practice-content hidden">
+                 <div class="flex justify-center flex-wrap gap-2 md:gap-4 mb-6 bg-gray-100 p-2 rounded-full">
+                     <button data-sub-practice-target="im-simple-practice" class="sub-tab-btn active text-sm font-semibold py-2 px-4 rounded-full bg-white shadow-sm border">Versi Simpel</button>
+                     <button data-sub-practice-target="im-complete-practice" class="sub-tab-btn text-sm font-semibold py-2 px-4 rounded-full bg-white shadow-sm border">Versi Lengkap</button>
+                </div>
+                
+                <div id="im-simple-practice" class="sub-practice-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center mb-6 max-w-4xl mx-auto">
+                        <div class="w-full bg-gray-50 p-4 rounded-lg border">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3">1. Tentukan Acuan Pencarian</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label for="lookup-column-select" class="block text-sm font-medium text-gray-700 mb-1">Cari Berdasarkan Kolom:</label>
+                                    <select id="lookup-column-select" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]"><option value="B">Nama</option><option value="A">ID Karyawan</option></select>
+                                </div>
+                                <div>
+                                    <label for="lookup-value-select" class="block text-sm font-medium text-gray-700 mb-1">Dengan Nilai:</label>
+                                    <select id="lookup-value-select" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full bg-gray-50 p-4 rounded-lg border">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-3">2. Tentukan Kolom Hasil</h3>
+                            <div>
+                                <label for="result-column-select" class="block text-sm font-medium text-gray-700 mb-1">Tampilkan Info dari Kolom:</label>
+                                <select id="result-column-select" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]"><option value="A">ID Karyawan</option><option value="B">Nama</option><option value="C">Departemen</option></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 gap-8 items-start mt-8">
+                        <div class="overflow-x-auto"><h3 class="font-bold text-center mb-2">Worksheet Data Karyawan</h3><table id="worksheet-simple" class="worksheet-table min-w-full bg-white border text-center"></table></div>
+                        <div class="space-y-2"><h3 class="font-bold text-center mb-2">Visualisasi Rumus</h3><div id="simple-viz-content" class="bg-green-50 rounded-lg p-4 shadow border-2 border-green-500"></div></div>
+                    </div>
+                </div>
+                <div id="im-complete-practice" class="sub-practice-content hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center mb-6 max-w-4xl mx-auto">
+                        <div class="w-full bg-gray-50 p-4 rounded-lg border"><h3 class="text-lg font-semibold text-gray-700 mb-3">1. Tentukan Acuan Baris (Produk)</h3><select id="lookup-row-select" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]"></select></div>
+                        <div class="w-full bg-gray-50 p-4 rounded-lg border"><h3 class="text-lg font-semibold text-gray-700 mb-3">2. Tentukan Acuan Kolom (Bulan)</h3><select id="lookup-col-select-complete" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#003F5C] focus:border-[#003F5C]"></select></div>
+                    </div>
+                    <div class="grid grid-cols-1 gap-8 items-start mt-8">
+                        <div class="overflow-x-auto"><h3 class="font-bold text-center mb-2">Worksheet Data Penjualan</h3><table id="worksheet-complete" class="worksheet-table min-w-full bg-white border text-center"></table></div>
+                        <div class="space-y-2"><h3 class="font-bold text-center mb-2">Visualisasi Rumus</h3><div id="complete-viz-content" class="bg-green-50 rounded-lg p-4 shadow border-2 border-green-500"></div></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="bg-[#003F5C] text-white text-center py-8 px-4">
+        <h2 class="text-3xl font-bold mb-2">Sekarang Giliran Anda!</h2>
+        <p class="text-lg">Semoga dengan simulasi dan pembedahan ini, Anda jadi lebih paham. Selamat mencoba di Excel!</p>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // DATA SETUP
+        const simpleData = {
+            headers: { 'A': 'ID Karyawan', 'B': 'Nama', 'C': 'Departemen' },
+            columns: {
+                'A': ['105', '102', '108', '101', '110', '103', '112', '109'],
+                'B': ['Budi', 'Ani', 'Candra', 'Dedi', 'Rina', 'Sari', 'Joko', 'Putri'],
+                'C': ['Marketing', 'Keuangan', 'IT', 'HRD', 'Produksi', 'Logistik', 'Penjualan', 'Pemasaran Digital']
+            }
+        };
+
+        const completeData = {
+            rowHeaders: ['Buku Tulis', 'Pulpen', 'Spidol', 'Penghapus', 'Penggaris'],
+            colHeaders: ['Januari', 'Februari', 'Maret', 'April'],
+            values: [
+                [150, 200, 250, 220],
+                [300, 350, 400, 380],
+                [100, 120, 110, 130],
+                [500, 550, 600, 580],
+                [80, 90, 85, 95]
+            ]
+        };
+
+        // GLOBAL UTILITIES
+        function createTable(containerId, headers, data, isSimple = true) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            let tableHTML = `<thead class="bg-gray-200"><tr><th class="py-2 px-4 border"></th>`;
+            if (isSimple) {
+                Object.keys(headers).forEach(key => { tableHTML += `<th class="py-2 px-4 border font-mono">${key}</th>`; });
+                tableHTML += `</tr><tr><td class="py-2 px-4 border bg-gray-200 font-mono">1</td>`;
+                Object.values(headers).forEach(val => { tableHTML += `<td class="py-2 px-4 border font-bold">${val}</td>`; });
+                 tableHTML += `</tr></thead><tbody>`;
+                 const numRows = data.A.length;
+                for (let i = 0; i < numRows; i++) {
+                    tableHTML += `<tr><td class="py-2 px-4 border bg-gray-200 font-mono">${i + 2}</td>`;
+                    Object.keys(headers).forEach(key => { tableHTML += `<td class="py-2 px-4 border" data-row="${i}" data-col-letter="${key}">${data[key][i]}</td>`; });
+                    tableHTML += `</tr>`;
+                }
+            } else { 
+                const colCount = headers.length + 1;
+                for(let i = 0; i < colCount; i++) {
+                    tableHTML += `<th class="py-2 px-4 border font-mono">${String.fromCharCode(65 + i)}</th>`;
+                }
+                tableHTML += `</tr></thead><tbody>`;
+                // Row 1 (Data Headers)
+                tableHTML += `<tr><td class="py-2 px-4 border bg-gray-200 font-mono">1</td>`;
+                tableHTML += `<td class="py-2 px-4 border font-bold">Produk</td>`; // Column A
+                headers.forEach((header) => {
+                    tableHTML += `<td class="py-2 px-4 border font-bold">${header}</td>`; // Column B, C, ...
+                });
+                tableHTML += `</tr>`;
+                // Data Rows
+                data.forEach((row, rowIndex) => {
+                    tableHTML += `<tr><td class="py-2 px-4 border bg-gray-200 font-mono">${rowIndex + 2}</td>`;
+                    tableHTML += `<td class="py-2 px-4 border" data-excel-col="A">${completeData.rowHeaders[rowIndex]}</td>`;
+                    row.forEach((cell, colIndex) => { tableHTML += `<td class="py-2 px-4 border" data-row="${rowIndex}" data-col="${colIndex}">${cell}</td>`; });
+                    tableHTML += `</tr>`;
+                });
+            }
+            tableHTML += `</tbody>`;
+            container.innerHTML = tableHTML;
+        }
+
+        function setupSubTabs(container) {
+            const subTabs = container.querySelectorAll('.sub-tab-btn');
+            const subContents = container.querySelectorAll('.sub-practice-content');
+            subTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    subTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const targetId = tab.dataset.subPracticeTarget;
+                    subContents.forEach(content => { content.id === targetId ? content.classList.remove('hidden') : content.classList.add('hidden'); });
+                });
+            });
+        }
+        
+        // --- MATCH PRACTICE MANAGER ---
+        const matchPracticeManager = {
+            init() {
+                this.lookupValSelect = document.getElementById('match-lookup-value-select');
+                this.table = document.getElementById('worksheet-match');
+                this.vizContent = document.getElementById('match-viz-content');
+                
+                createTable('worksheet-match', simpleData.headers, simpleData.columns);
+                this.table = document.getElementById('worksheet-match');
+                
+                simpleData.columns['B'].forEach(val => { this.lookupValSelect.innerHTML += `<option value="${val}">${val}</option>`; });
+                this.lookupValSelect.value = 'Candra';
+                
+                this.lookupValSelect.addEventListener('change', () => this.run());
+                this.run();
+            },
+            run() {
+                this.clearHighlights();
+                const lookupValue = this.lookupValSelect.value;
+                const lookupRange = `B2:B${simpleData.columns['B'].length + 1}`;
+                const matchPos = simpleData.columns['B'].indexOf(lookupValue) + 1;
+                
+                this.vizContent.innerHTML = `
+                    <h4 class="font-bold text-[#58508D]">Rumus MATCH</h4>
+                    <p class="text-sm mt-1">Mencari posisi untuk "${lookupValue}" di dalam kolom Nama.</p>
+                    <pre class="font-mono bg-white border p-2 rounded mt-2 text-xs"><code>=MATCH("${lookupValue}"; ${lookupRange}; 0)</code></pre>
+                    <p class="mt-2">Hasil Posisi: <span class="font-bold text-2xl text-[#FFA600]">${matchPos}</span></p>`;
+                
+                this.table.querySelectorAll(`td[data-col-letter="B"]`).forEach(c => c.classList.add('highlight-search-range'));
+                const lookupCell = [...this.table.querySelectorAll(`td[data-col-letter="B"]`)].find(c => c.textContent === lookupValue);
+                if(lookupCell) lookupCell.classList.add('highlight-lookup-value');
+            },
+            clearHighlights() {
+                this.table.querySelectorAll('td').forEach(c => c.classList.remove('highlight-search-range', 'highlight-lookup-value'));
+            }
+        };
+
+        // --- INDEX PRACTICE MANAGER ---
+        const indexPracticeManager = {
+            init() {
+                this.simple = {
+                    colSelect: document.getElementById('index-simple-col-select'),
+                    rowInput: document.getElementById('index-simple-row-input'),
+                    table: document.getElementById('worksheet-index-simple'),
+                    viz: document.getElementById('index-simple-viz'),
+                    init() {
+                        createTable('worksheet-index-simple', simpleData.headers, simpleData.columns);
+                        this.table = document.getElementById('worksheet-index-simple');
+                        this.rowInput.max = simpleData.columns.A.length;
+                        Object.entries(simpleData.headers).forEach(([k,v]) => { this.colSelect.innerHTML += `<option value="${k}">${v}</option>`;});
+                        this.colSelect.value = 'C';
+                        this.colSelect.addEventListener('change', () => this.run());
+                        this.rowInput.addEventListener('input', () => this.run());
+                        this.run();
+                    },
+                    run() {
+                        this.clearHighlights();
+                        const resultCol = this.colSelect.value;
+                        const rowNum = parseInt(this.rowInput.value);
+                        const range = `${resultCol}2:${resultCol}${simpleData.columns[resultCol].length + 1}`;
+                        let result = '#REF!';
+                        if (rowNum >= 1 && rowNum <= simpleData.columns[resultCol].length) {
+                            result = simpleData.columns[resultCol][rowNum - 1];
+                        }
+                        this.viz.innerHTML = `<h4 class="font-bold text-[#BC5090]">Rumus INDEX (Simpel)</h4><p class="text-sm mt-1">Mengambil data dari kolom ${simpleData.headers[resultCol]} pada baris ke-${rowNum}.</p><pre class="font-mono bg-white border p-2 rounded mt-2 text-xs"><code>=INDEX(${range}; ${rowNum})</code></pre><p class="mt-2">Hasil: <span class="font-bold text-2xl text-[#BC5090]">${result}</span></p>`;
+                        this.table.querySelectorAll(`td[data-col-letter="${resultCol}"]`).forEach(c => c.classList.add('highlight-result-range'));
+                        if (result !== '#REF!') {
+                            const cell = this.table.querySelector(`td[data-row="${rowNum - 1}"][data-col-letter="${resultCol}"]`);
+                            if(cell) cell.classList.add('highlight-final-cell');
+                        }
+                    },
+                    clearHighlights() { this.table.querySelectorAll('td').forEach(c => c.classList.remove('highlight-result-range', 'highlight-final-cell')); }
+                };
+
+                this.complete = {
+                    rowInput: document.getElementById('index-complete-row-input'),
+                    colInput: document.getElementById('index-complete-col-input'),
+                    table: document.getElementById('worksheet-index-complete'),
+                    viz: document.getElementById('index-complete-viz'),
+                    init() {
+                        createTable('worksheet-index-complete', completeData.colHeaders, completeData.values, false);
+                        this.table = document.getElementById('worksheet-index-complete');
+                        this.rowInput.max = completeData.rowHeaders.length;
+                        this.colInput.max = completeData.colHeaders.length;
+                        this.rowInput.addEventListener('input', () => this.run());
+                        this.colInput.addEventListener('input', () => this.run());
+                        this.run();
+                    },
+                    run() {
+                        this.clearHighlights();
+                        const rowNum = parseInt(this.rowInput.value);
+                        const colNum = parseInt(this.colInput.value);
+                        const range = `B2:${String.fromCharCode(65 + completeData.colHeaders.length)}${completeData.rowHeaders.length + 1}`;
+                        let result = '#REF!';
+                        if (rowNum >= 1 && rowNum <= completeData.rowHeaders.length && colNum >=1 && colNum <= completeData.colHeaders.length) {
+                            result = completeData.values[rowNum - 1][colNum - 1];
+                        }
+                        this.viz.innerHTML = `<h4 class="font-bold text-[#BC5090]">Rumus INDEX (Lengkap)</h4><p class="text-sm mt-1">Mengambil data dari tabel pada baris ke-${rowNum} dan kolom ke-${colNum}.</p><pre class="font-mono bg-white border p-2 rounded mt-2 text-xs"><code>=INDEX(${range}; ${rowNum}; ${colNum})</code></pre><p class="mt-2">Hasil: <span class="font-bold text-2xl text-[#BC5090]">${result}</span></p>`;
+                        this.table.querySelectorAll('td[data-row]').forEach(c => c.classList.add('highlight-data-array'));
+                        if (result !== '#REF!') {
+                            const cell = this.table.querySelector(`td[data-row="${rowNum - 1}"][data-col="${colNum - 1}"]`);
+                            if(cell) cell.classList.add('highlight-final-cell');
+                        }
+                    },
+                    clearHighlights() { this.table.querySelectorAll('td').forEach(c => c.classList.remove('highlight-data-array', 'highlight-final-cell')); }
+                };
+
+                this.simple.init();
+                this.complete.init();
+                setupSubTabs(document.getElementById('index-practice'));
+            }
+        };
+
+        // --- INDEX & MATCH PRACTICE MANAGER ---
+        const indexMatchPracticeManager = {
+            init() {
+                this.simple = {
+                    lookupColSelect: document.getElementById('lookup-column-select'),
+                    lookupValSelect: document.getElementById('lookup-value-select'),
+                    resultColSelect: document.getElementById('result-column-select'),
+                    table: document.getElementById('worksheet-simple'),
+                    vizContent: document.getElementById('simple-viz-content'),
+                    
+                    init() {
+                        createTable('worksheet-simple', simpleData.headers, simpleData.columns);
+                        this.table = document.getElementById('worksheet-simple');
+                        this.populateLookupValues();
+                        this.setupEventListeners();
+                        this.runSimulation();
+                    },
+                    populateLookupValues() {
+                        const selectedCol = this.lookupColSelect.value;
+                        const values = simpleData.columns[selectedCol];
+                        this.lookupValSelect.innerHTML = '';
+                        values.forEach(val => { this.lookupValSelect.innerHTML += `<option value="${val}">${val}</option>`; });
+                    },
+                    setupEventListeners() {
+                        this.lookupColSelect.addEventListener('change', () => { this.populateLookupValues(); this.runSimulation(); });
+                        this.lookupValSelect.addEventListener('change', () => this.runSimulation());
+                        this.resultColSelect.addEventListener('change', () => this.runSimulation());
+                    },
+                    runSimulation() {
+                        if (this.lookupColSelect.value === this.resultColSelect.value) {
+                            const otherOption = Object.keys(simpleData.headers).find(k => k !== this.lookupColSelect.value);
+                            this.resultColSelect.value = otherOption;
+                        }
+                         this.updateVizContent();
+                    },
+                    updateVizContent() {
+                        const lookupCol = this.lookupColSelect.value;
+                        const lookupValue = this.lookupValSelect.value;
+                        const resultCol = this.resultColSelect.value;
+                        const lookupRange = `${lookupCol}2:${lookupCol}${simpleData.columns[lookupCol].length + 1}`;
+                        const resultRange = `${resultCol}2:${resultCol}${simpleData.columns[resultCol].length + 1}`;
+                        const matchPos = simpleData.columns[lookupCol].indexOf(lookupValue) + 1;
+                        const result = simpleData.columns[resultCol][matchPos-1];
+                        
+                        this.clearHighlights();
+
+                        this.vizContent.innerHTML = `
+                            <h4 class="font-bold text-green-700">Rumus Gabungan & Hasil Akhir</h4>
+                            <p class="text-sm mt-1">Langsung gabungkan MATCH untuk mencari posisi, dan INDEX untuk mengambil hasilnya.</p>
+                            <pre class="font-mono bg-green-100 border p-2 rounded mt-2 text-xs"><code>=INDEX(${resultRange}; MATCH("${lookupValue}"; ${lookupRange}; 0))</code></pre>
+                            <p class="mt-2">${simpleData.headers[resultCol]}: <span class="font-bold text-2xl text-green-700">${result}</span></p>`;
+
+                        this.table.querySelectorAll(`td[data-col-letter="${lookupCol}"]`).forEach(c => c.classList.add('highlight-search-range'));
+                        this.table.querySelectorAll(`td[data-col-letter="${resultCol}"]`).forEach(c => c.classList.add('highlight-result-range'));
+                        const finalCell = this.table.querySelector(`td[data-row="${matchPos - 1}"][data-col-letter="${resultCol}"]`);
+                        if(finalCell) finalCell.classList.add('highlight-final-cell');
+                    },
+                    clearHighlights() { this.table.querySelectorAll('td').forEach(c => c.classList.remove('highlight-search-range', 'highlight-lookup-value', 'highlight-result-range', 'highlight-final-cell')); }
+                };
+
+                this.complete = {
+                    lookupRowSelect: document.getElementById('lookup-row-select'),
+                    lookupColSelect: document.getElementById('lookup-col-select-complete'),
+                    table: document.getElementById('worksheet-complete'),
+                    vizContent: document.getElementById('complete-viz-content'),
+                    init() {
+                        createTable('worksheet-complete', completeData.colHeaders, completeData.values, false);
+                         this.table = document.getElementById('worksheet-complete');
+                        this.populateSelects();
+                        this.setupEventListeners();
+                        this.runSimulation();
+                    },
+                    populateSelects() {
+                        completeData.rowHeaders.forEach(val => { this.lookupRowSelect.innerHTML += `<option value="${val}">${val}</option>`; });
+                        completeData.colHeaders.forEach(val => { this.lookupColSelect.innerHTML += `<option value="${val}">${val}</option>`; });
+                    },
+                    setupEventListeners() {
+                        this.lookupRowSelect.addEventListener('change', () => this.runSimulation());
+                        this.lookupColSelect.addEventListener('change', () => this.runSimulation());
+                    },
+                    runSimulation() { this.updateVizContent(); },
+                    updateVizContent() {
+                        const rowValue = this.lookupRowSelect.value;
+                        const colValue = this.lookupColSelect.value;
+                        const rowRange = `A2:A${completeData.rowHeaders.length + 2}`;
+                        const colRange = `B1:${String.fromCharCode(66 + completeData.colHeaders.length-1)}1`;
+                        const dataRange = `B2:${String.fromCharCode(66 + completeData.colHeaders.length-1)}${completeData.rowHeaders.length + 2}`;
+                        const result = completeData.values[completeData.rowHeaders.indexOf(rowValue)][completeData.colHeaders.indexOf(colValue)];
+
+                        this.clearHighlights();
+
+                        this.vizContent.innerHTML = `
+                            <h4 class="font-bold text-green-700">Rumus Gabungan & Hasil Akhir</h4>
+                            <p class="text-sm mt-1">Gabungkan dua MATCH untuk mencari posisi baris dan kolom, lalu gunakan INDEX untuk mengambil data di persimpangannya.</p>
+                            <pre class="font-mono bg-green-100 border p-2 rounded mt-2 text-xs break-all"><code>=INDEX(${dataRange}; MATCH("${rowValue}";${rowRange};0); MATCH("${colValue}";${colRange};0))</code></pre>
+                            <p class="mt-2">Jumlah Penjualan: <span class="font-bold text-2xl text-green-700">${result}</span></p>`;
+                        
+                        this.table.querySelectorAll('td[data-row]').forEach(c => c.classList.add('highlight-data-array'));
+                        const finalCell = this.table.querySelector(`td[data-row="${completeData.rowHeaders.indexOf(rowValue)}"][data-col="${completeData.colHeaders.indexOf(colValue)}"]`);
+                        if(finalCell) finalCell.classList.add('highlight-final-cell');
+                    },
+                    clearHighlights() { this.table.querySelectorAll('td, th').forEach(c => c.classList.remove('highlight-row-range', 'highlight-row-value', 'highlight-col-range', 'highlight-col-value', 'highlight-data-array', 'highlight-final-cell')); }
+                };
+                
+                this.simple.init();
+                this.complete.init();
+                setupSubTabs(document.getElementById('index-match-practice'));
+            }
+        };
+
+        // --- GLOBAL INITIALIZATION ---
+        const practiceTabs = document.querySelectorAll('.practice-tab-btn');
+        const practiceContents = document.querySelectorAll('.practice-content');
+        practiceTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                practiceTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const targetId = tab.dataset.practiceTarget;
+                practiceContents.forEach(content => { content.id === targetId ? content.classList.remove('hidden') : content.classList.add('hidden'); });
+            });
+        });
+
+        const breakdownTabs = document.querySelectorAll('.tab-btn');
+        const breakdownContents = document.querySelectorAll('.tab-content');
+        breakdownTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                breakdownTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const targetId = tab.dataset.target;
+                breakdownContents.forEach(content => { content.id === targetId ? content.classList.remove('hidden') : content.classList.add('hidden'); });
+            });
+        });
+        
+        matchPracticeManager.init();
+        indexPracticeManager.init();
+        indexMatchPracticeManager.init();
+        
+        // Set default values for simple practice for better initial view
+        indexMatchPracticeManager.simple.lookupValSelect.value = 'Candra';
+        indexMatchPracticeManager.simple.resultColSelect.value = 'A';
+        indexMatchPracticeManager.simple.runSimulation();
+    });
+    </script>
+
+</body>
+</html>
+
