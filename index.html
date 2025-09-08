@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF--8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infografik Interaktif: Menguasai INDEX & MATCH di Excel</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -397,11 +397,15 @@
                 const lookupRange = `B2:B${simpleData.columns['B'].length + 1}`;
                 const matchPos = simpleData.columns['B'].indexOf(lookupValue) + 1;
                 
+                const vizId = `viz-match-${new Date().getTime()}`;
                 this.vizContent.innerHTML = `
                     <h4 class="font-bold text-[#58508D]">Rumus MATCH</h4>
-                    <p class="text-sm mt-1">Mencari posisi untuk "${lookupValue}" di dalam kolom Nama.</p>
-                    <pre class="font-mono bg-white border p-2 rounded mt-2 text-xs"><code>=MATCH("${lookupValue}"; ${lookupRange}; 0)</code></pre>
-                    <p class="mt-2">Hasil Posisi: <span class="font-bold text-2xl text-[#FFA600]">${matchPos}</span></p>`;
+                    <p class="text-sm mt-1">Mencari posisi untuk "${lookupValue}" di dalam kolom Nama. (Anda bisa klik dan edit rumus di bawah)</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <pre class="font-mono bg-white border p-2 rounded text-xs flex-grow"><code contenteditable="true">=MATCH("${lookupValue}"; ${lookupRange}; 0)</code></pre>
+                        <button class="recalculate-btn bg-[#003F5C] hover:bg-[#002c42] text-white px-3 py-1 rounded-md text-xs" data-target-id="${vizId}">Hitung Ulang</button>
+                    </div>
+                    <p class="mt-2">Hasil Posisi: <span id="${vizId}" class="font-bold text-2xl text-[#FFA600] transition-colors">${matchPos}</span></p>`;
                 
                 this.table.querySelectorAll(`td[data-col-letter="B"]`).forEach(c => c.classList.add('highlight-search-range'));
                 const lookupCell = [...this.table.querySelectorAll(`td[data-col-letter="B"]`)].find(c => c.textContent === lookupValue);
@@ -439,7 +443,17 @@
                         if (rowNum >= 1 && rowNum <= simpleData.columns[resultCol].length) {
                             result = simpleData.columns[resultCol][rowNum - 1];
                         }
-                        this.viz.innerHTML = `<h4 class="font-bold text-[#BC5090]">Rumus INDEX (Simpel)</h4><p class="text-sm mt-1">Mengambil data dari kolom ${simpleData.headers[resultCol]} pada baris ke-${rowNum}.</p><pre class="font-mono bg-white border p-2 rounded mt-2 text-xs"><code>=INDEX(${range}; ${rowNum})</code></pre><p class="mt-2">Hasil: <span class="font-bold text-2xl text-[#BC5090]">${result}</span></p>`;
+
+                        const vizId = `viz-index-simple-${new Date().getTime()}`;
+                        this.viz.innerHTML = `
+                            <h4 class="font-bold text-[#BC5090]">Rumus INDEX (Simpel)</h4>
+                            <p class="text-sm mt-1">Mengambil data dari kolom ${simpleData.headers[resultCol]} pada baris ke-${rowNum}. (Anda bisa klik dan edit rumus di bawah)</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <pre class="font-mono bg-white border p-2 rounded text-xs flex-grow"><code contenteditable="true">=INDEX(${range}; ${rowNum})</code></pre>
+                                <button class="recalculate-btn bg-[#003F5C] hover:bg-[#002c42] text-white px-3 py-1 rounded-md text-xs" data-target-id="${vizId}">Hitung Ulang</button>
+                            </div>
+                            <p class="mt-2">Hasil: <span id="${vizId}" class="font-bold text-2xl text-[#BC5090] transition-colors">${result}</span></p>`;
+
                         this.table.querySelectorAll(`td[data-col-letter="${resultCol}"]`).forEach(c => c.classList.add('highlight-result-range'));
                         if (result !== '#REF!') {
                             const cell = this.table.querySelector(`td[data-row="${rowNum - 1}"][data-col-letter="${resultCol}"]`);
@@ -472,7 +486,16 @@
                         if (rowNum >= 1 && rowNum <= completeData.rowHeaders.length && colNum >=1 && colNum <= completeData.colHeaders.length) {
                             result = completeData.values[rowNum - 1][colNum - 1];
                         }
-                        this.viz.innerHTML = `<h4 class="font-bold text-[#BC5090]">Rumus INDEX (Lengkap)</h4><p class="text-sm mt-1">Mengambil data dari tabel pada baris ke-${rowNum} dan kolom ke-${colNum}.</p><pre class="font-mono bg-white border p-2 rounded mt-2 text-xs"><code>=INDEX(${range}; ${rowNum}; ${colNum})</code></pre><p class="mt-2">Hasil: <span class="font-bold text-2xl text-[#BC5090]">${result}</span></p>`;
+                        const vizId = `viz-index-complete-${new Date().getTime()}`;
+                        this.viz.innerHTML = `
+                            <h4 class="font-bold text-[#BC5090]">Rumus INDEX (Lengkap)</h4>
+                            <p class="text-sm mt-1">Mengambil data dari tabel pada baris ke-${rowNum} dan kolom ke-${colNum}. (Anda bisa klik dan edit rumus di bawah)</p>
+                             <div class="flex items-center gap-2 mt-2">
+                                <pre class="font-mono bg-white border p-2 rounded text-xs flex-grow"><code contenteditable="true">=INDEX(${range}; ${rowNum}; ${colNum})</code></pre>
+                                <button class="recalculate-btn bg-[#003F5C] hover:bg-[#002c42] text-white px-3 py-1 rounded-md text-xs" data-target-id="${vizId}">Hitung Ulang</button>
+                            </div>
+                            <p class="mt-2">Hasil: <span id="${vizId}" class="font-bold text-2xl text-[#BC5090] transition-colors">${result}</span></p>`;
+
                         this.table.querySelectorAll('td[data-row]').forEach(c => c.classList.add('highlight-data-array'));
                         if (result !== '#REF!') {
                             const cell = this.table.querySelector(`td[data-row="${rowNum - 1}"][data-col="${colNum - 1}"]`);
@@ -534,11 +557,15 @@
                         
                         this.clearHighlights();
 
+                        const vizId = `viz-im-simple-${new Date().getTime()}`;
                         this.vizContent.innerHTML = `
                             <h4 class="font-bold text-green-700">Rumus Gabungan & Hasil Akhir</h4>
-                            <p class="text-sm mt-1">Langsung gabungkan MATCH untuk mencari posisi, dan INDEX untuk mengambil hasilnya.</p>
-                            <pre class="font-mono bg-green-100 border p-2 rounded mt-2 text-xs"><code>=INDEX(${resultRange}; MATCH("${lookupValue}"; ${lookupRange}; 0))</code></pre>
-                            <p class="mt-2">${simpleData.headers[resultCol]}: <span class="font-bold text-2xl text-green-700">${result}</span></p>`;
+                            <p class="text-sm mt-1">Langsung gabungkan MATCH untuk mencari posisi, dan INDEX untuk mengambil hasilnya. (Anda bisa klik dan edit rumus di bawah)</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <pre class="font-mono bg-green-100 border p-2 rounded text-xs flex-grow"><code contenteditable="true">=INDEX(${resultRange}; MATCH("${lookupValue}"; ${lookupRange}; 0))</code></pre>
+                                <button class="recalculate-btn bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded-md text-xs" data-target-id="${vizId}">Hitung Ulang</button>
+                            </div>
+                            <p class="mt-2">${simpleData.headers[resultCol]}: <span id="${vizId}" class="font-bold text-2xl text-green-700 transition-colors">${result}</span></p>`;
 
                         this.table.querySelectorAll(`td[data-col-letter="${lookupCol}"]`).forEach(c => c.classList.add('highlight-search-range'));
                         this.table.querySelectorAll(`td[data-col-letter="${resultCol}"]`).forEach(c => c.classList.add('highlight-result-range'));
@@ -579,11 +606,15 @@
 
                         this.clearHighlights();
 
+                        const vizId = `viz-im-complete-${new Date().getTime()}`;
                         this.vizContent.innerHTML = `
                             <h4 class="font-bold text-green-700">Rumus Gabungan & Hasil Akhir</h4>
-                            <p class="text-sm mt-1">Gabungkan dua MATCH untuk mencari posisi baris dan kolom, lalu gunakan INDEX untuk mengambil data di persimpangannya.</p>
-                            <pre class="font-mono bg-green-100 border p-2 rounded mt-2 text-xs break-all"><code>=INDEX(${dataRange}; MATCH("${rowValue}";${rowRange};0); MATCH("${colValue}";${colRange};0))</code></pre>
-                            <p class="mt-2">Jumlah Penjualan: <span class="font-bold text-2xl text-green-700">${result}</span></p>`;
+                            <p class="text-sm mt-1">Gabungkan dua MATCH untuk mencari posisi baris dan kolom, lalu gunakan INDEX untuk mengambil data di persimpangannya. (Anda bisa klik dan edit rumus di bawah)</p>
+                             <div class="flex items-center gap-2 mt-2">
+                                <pre class="font-mono bg-green-100 border p-2 rounded text-xs break-all flex-grow"><code contenteditable="true">=INDEX(${dataRange}; MATCH("${rowValue}";${rowRange};0); MATCH("${colValue}";${colRange};0))</code></pre>
+                                <button class="recalculate-btn bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded-md text-xs" data-target-id="${vizId}">Hitung Ulang</button>
+                            </div>
+                            <p class="mt-2">Jumlah Penjualan: <span id="${vizId}" class="font-bold text-2xl text-green-700 transition-colors">${result}</span></p>`;
                         
                         this.table.querySelectorAll('td[data-row]').forEach(c => c.classList.add('highlight-data-array'));
                         const finalCell = this.table.querySelector(`td[data-row="${completeData.rowHeaders.indexOf(rowValue)}"][data-col="${completeData.colHeaders.indexOf(colValue)}"]`);
@@ -629,6 +660,124 @@
         indexMatchPracticeManager.simple.lookupValSelect.value = 'Candra';
         indexMatchPracticeManager.simple.resultColSelect.value = 'A';
         indexMatchPracticeManager.simple.runSimulation();
+
+        // --- REAL FORMULA EVALUATION ENGINE ---
+
+        /**
+         * Parses a range string (e.g., "A2:A9") and returns the corresponding data array.
+         * @param {string} rangeStr - The Excel-style range string.
+         * @param {object} dataSource - The data object (simpleData or completeData).
+         * @returns {Array|null} An array of values from that range or null if invalid.
+         */
+        function getValuesFromRange(rangeStr, dataSource) {
+            const match = rangeStr.toUpperCase().match(/^([A-Z]+)(\d+):([A-Z]+)(\d+)$/);
+            if (!match) return null;
+
+            const [, startCol, startRow, endCol, endRow] = match;
+
+            // For this app's specific data structures
+            if (dataSource === simpleData) {
+                if (startCol !== endCol) return null; // Only single-column ranges supported for simpleData
+                const colData = dataSource.columns[startCol];
+                if (!colData) return null;
+                // Excel rows start at 1, header is row 1. Data starts at row 2. Array is 0-indexed.
+                // So, data for Excel row `r` is at index `r-2`.
+                return colData.slice(startRow - 2, endRow - 1);
+            }
+            return null; // Add logic for completeData if needed
+        }
+
+        /**
+         * Evaluates the formula text from the editable code blocks.
+         * @param {string} formula - The formula string entered by the user.
+         */
+        function evaluateFormula(formula) {
+            formula = formula.trim().replace(/\u00A0/g, ' '); // Standardize spaces
+
+            try {
+                // Pattern 1: Simple INDEX & MATCH
+                let match = formula.match(/^=INDEX\s*\((.+);\s*MATCH\s*\((.+);\s*(.+);\s*0\)\s*\)$/i);
+                if (match) {
+                    const resultRangeStr = match[1].trim();
+                    let lookupValue = match[2].trim();
+                    const lookupRangeStr = match[3].trim();
+                    
+                    // remove quotes from lookup value if they exist
+                    if (lookupValue.startsWith('"') && lookupValue.endsWith('"')) {
+                        lookupValue = lookupValue.substring(1, lookupValue.length - 1);
+                    }
+
+                    const lookupArray = getValuesFromRange(lookupRangeStr, simpleData);
+                    const resultArray = getValuesFromRange(resultRangeStr, simpleData);
+
+                    if (!lookupArray || !resultArray) return '#REF!';
+
+                    const itemIndex = lookupArray.indexOf(lookupValue);
+                    
+                    if (itemIndex === -1) return '#N/A';
+                    
+                    if (resultArray[itemIndex] !== undefined) {
+                        return { value: resultArray[itemIndex], color: 'text-green-700' };
+                    }
+                    return '#REF!';
+                }
+
+                // Pattern 2: Simple MATCH only
+                match = formula.match(/^=MATCH\s*\((.+);\s*(.+);\s*0\s*\)$/i);
+                if (match) {
+                    let lookupValue = match[1].trim();
+                    const lookupRangeStr = match[2].trim();
+                     if (lookupValue.startsWith('"') && lookupValue.endsWith('"')) {
+                        lookupValue = lookupValue.substring(1, lookupValue.length - 1);
+                    }
+                    const lookupArray = getValuesFromRange(lookupRangeStr, simpleData);
+                    if (!lookupArray) return '#REF!';
+                    const itemIndex = lookupArray.indexOf(lookupValue);
+                    return itemIndex === -1 ? '#N/A' : { value: itemIndex + 1, color: 'text-[#FFA600]' };
+                }
+                
+                // Pattern 3: Simple INDEX only
+                match = formula.match(/^=INDEX\s*\((.+);\s*(\d+)\s*\)$/i);
+                 if (match) {
+                    const resultRangeStr = match[1].trim();
+                    const rowNum = parseInt(match[2].trim(), 10);
+                    const resultArray = getValuesFromRange(resultRangeStr, simpleData);
+                     if (!resultArray) return '#REF!';
+                     const itemIndex = rowNum - 1;
+                     if (resultArray[itemIndex] !== undefined) {
+                         return { value: resultArray[itemIndex], color: 'text-[#BC5090]' };
+                     }
+                     return '#REF!';
+                }
+
+
+                return '#VALUE!'; // If no pattern matches
+            } catch (e) {
+                return '#ERROR!';
+            }
+        }
+
+
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('recalculate-btn')) {
+                const targetId = event.target.dataset.targetId;
+                const resultSpan = document.getElementById(targetId);
+                const formulaCodeElement = event.target.previousElementSibling.querySelector('code');
+
+                if (resultSpan && formulaCodeElement) {
+                    const formulaText = formulaCodeElement.innerText;
+                    const result = evaluateFormula(formulaText);
+                    
+                    if (typeof result === 'object' && result !== null) {
+                        resultSpan.textContent = result.value;
+                        resultSpan.className = `font-bold text-2xl transition-colors ${result.color}`;
+                    } else {
+                        resultSpan.textContent = result;
+                        resultSpan.className = 'font-bold text-2xl text-red-500 transition-colors';
+                    }
+                }
+            }
+        });
     });
     </script>
 
